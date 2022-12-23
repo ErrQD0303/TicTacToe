@@ -105,6 +105,7 @@ void _move(int id, bool turn[2],
 			break;
 	}
 	winner = 0;
+	//
 }
 
 int main() {

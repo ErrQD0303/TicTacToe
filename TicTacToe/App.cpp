@@ -162,7 +162,7 @@ int main() {
 	if (winner1 == winner2)
 		std::cout << "\nTie!!!";
 	else
-		std::cout << "\n\Winner:\nPlayer " 
+		std::cout << "\nWinner:\nPlayer " 
 		<< ((winner1 > winner2) ? winner1 : winner2);
 	return 0;
 }

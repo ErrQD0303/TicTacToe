@@ -7,6 +7,7 @@
 #include <string>
 #include <Windows.h>
 #include <iomanip>
+#include <conio.h>
 
 std::mutex m;
 std::condition_variable cv;
@@ -164,5 +165,6 @@ int main() {
 	else
 		std::cout << "\nWinner:\nPlayer " 
 		<< ((winner1 > winner2) ? winner1 : winner2);
+	int ch = _getch();
 	return 0;
 }

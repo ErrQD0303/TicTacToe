@@ -5,9 +5,19 @@
 #include <condition_variable>
 #include <chrono>
 #include <string>
+#include <Windows.h>
 
 std::mutex m;
 std::condition_variable cv;
+
+void gotoxy(SHORT posX, SHORT posY) {
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD Position;
+	Position.X = posX;
+	Position.Y = posY;
+
+	SetConsoleCursorPosition(hStdout, Position);
+}
 
 bool checkWin(std::vector<std::vector<char>>& table, int X, int Y, 
 	int N, int winCon) {
@@ -79,6 +89,9 @@ void _move(int id, bool turn[2],
 			break;
 		int x, y;
 		do {
+			gotoxy(0, 6); 
+			std::cout << std::setw(43) << std::setfill(' ') << " ";
+			gotoxy(0, 6);
 			std::cout << "Player " << id << " move: ";
 			std::string PlayerMove;
 			std::getline(std::cin, PlayerMove);
@@ -88,7 +101,11 @@ void _move(int id, bool turn[2],
 			if (table[x][y] != 32)
 				std::cout << "Move invalid, cell already has been mark!\n";
 		} while (table[x][y] != 32);
+		gotoxy(0, 7);
+		std::cout << std::setw(43) << std::setfill(' ') << " ";
 		table[x][y] = (id == 1) ? 'O' : 'X';
+		gotoxy(0 + 2 * y, 1 + x * 2);
+		std::cout << table[x][y];
 		if (checkWin(table, x, y, N, 3) == true) {
 			winner = id;
 			count = 9;
@@ -108,11 +125,21 @@ void _move(int id, bool turn[2],
 	//
 }
 
+void boxDraw() {
+	for (int j = 0; j < 2; ++j) {
+		for (int i = 0; i < 2; ++i) {
+			gotoxy(0 + i * 2 + 1, 2 + 2 * j);
+			std::cout << char(197);
+		}
+	}
+}
+
 int main() {
 	int N = 3, count = 0;
 	bool turn[2]{ 1 };
 	int winner1, winner2;
 	std::cout << "\t\t\t\t\t\t\tTICTACTOE\n";
+	boxDraw();
 	std::vector<std::vector<char>> table(N, std::vector<char>(N, 32));
 	std::thread t1(_move, 1, turn, std::ref(table), std::ref(count), 
 		N, std::ref(winner1));
@@ -124,9 +151,9 @@ int main() {
 	if (t2.joinable())
 		t2.join();
 	if (winner1 == winner2)
-		std::cout << "Tie!!!";
+		std::cout << "\n\t\t\t\t\t\t\tTie!!!";
 	else
-		std::cout << "\t\t\t\t\t\t\tWinner:\n\t\t\t\t\t\t\tPlayer " 
+		std::cout << "\n\t\t\t\t\t\t\tWinner:\n\t\t\t\t\t\t\tPlayer " 
 		<< ((winner1 > winner2) ? winner1 : winner2);
 	return 0;
 }

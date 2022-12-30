@@ -11,6 +11,7 @@
 
 std::mutex m;
 std::condition_variable cv;
+int x = 0, y = 0;
 
 void gotoxy(SHORT posX, SHORT posY) {
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -89,19 +90,40 @@ void _move(int id, bool turn[2],
 		cv.wait(ul, [=] {return turn[id - 1]; });
 		if (count == 9)
 			break;
-		int x, y;
+		char c;
 		do {
-			gotoxy(0, 8); 
-			std::cout << std::setw(43) << std::setfill(' ') << " ";
 			gotoxy(0, 8);
-			std::cout << "Player " << id << " move: ";
-			std::string PlayerMove;
-			std::getline(std::cin, PlayerMove);
-			size_t dashPos = PlayerMove.find('-');
-			x = stoi(PlayerMove.substr(0, dashPos)) - 1;
-			y = static_cast<int>(PlayerMove[dashPos + 1]) - 97;
-			if (table[x][y] != 32)
+			std::cout << "Player " << id << " turn! ";			gotoxy(2 + 2 * y, 1 + x * 2);
+			do {
+				c = _getch();
+				switch (c) {
+				case 72:
+					if (x > 0)
+						--x;
+					break;
+				case 80:
+					if (x < 2)
+						++x;
+					break;
+				case 75:
+					if (y > 0)
+					--y;
+					break;
+				case 77:
+					if (y < 2)
+					++y;
+					break;
+				case 13:
+					break;
+				}
+				gotoxy(2 + 2 * y, 1 + x * 2);
+			} while (c != 13);
+			gotoxy(10, 1);
+			std::cout << std::setw(43) << std::setfill(' ') << " ";
+			if (table[x][y] != 32) {
+				gotoxy(10, 1);
 				std::cout << "Move invalid, cell already has been mark!\n";
+			}
 		} while (table[x][y] != 32);
 		gotoxy(0, 9);
 		std::cout << std::setw(43) << std::setfill(' ') << " ";
@@ -165,6 +187,5 @@ int main() {
 	else
 		std::cout << "\nWinner:\nPlayer " 
 		<< ((winner1 > winner2) ? winner1 : winner2);
-	int ch = _getch();
 	return 0;
 }

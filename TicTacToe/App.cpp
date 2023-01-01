@@ -93,10 +93,10 @@ void _move(int id, bool turn[2],
 		char c;
 		do {
 			gotoxy(0, 8);
-			std::cout << "Player " << id << " turn! ";			gotoxy(2 + 2 * y, 1 + x * 2);
+			std::cout << "Player " << id << " turn! ";			
+			gotoxy(2 + 2 * y, 1 + x * 2);
 			do {
-				c = _getch();
-				switch (c) {
+				switch (c = _getch()) {
 				case 72:
 					if (x > 0)
 						--x;
@@ -187,5 +187,6 @@ int main() {
 	else
 		std::cout << "\nWinner:\nPlayer " 
 		<< ((winner1 > winner2) ? winner1 : winner2);
+	char ch = _getch();
 	return 0;
 }
